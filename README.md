@@ -25,12 +25,3 @@ Blacksmith [documents](https://docs.blacksmith.sh/blacksmith-runners/overview#ma
 This repo runs a tiny GitHub Action **once a day** on a `blacksmith-6vcpu-macos-latest` runner, lists every Xcode install it finds, and commits the result back to this README. So the table above is always the real, current state of the runner image.
 
 > 💡 **Want to be notified when a new Xcode lands on Blacksmith?** Watch this repo's **Releases** (Watch → Custom → Releases). A release titled with the date is published automatically whenever a new Xcode version shows up.
-
-## How it works
-
-- [`.github/workflows/check-xcode.yml`](.github/workflows/check-xcode.yml) runs daily (and on demand via `workflow_dispatch`)
-- [`scripts/collect-xcode.sh`](scripts/collect-xcode.sh) reads each `/Applications/Xcode*.app` version + build number straight from its `Info.plist`
-- the script output replaces everything between the `XCODE-LIST` markers above, and the workflow commits the change only when something actually changed
-- when a brand-new version number appears, the workflow also cuts a GitHub **release** (titled with the date) so watchers get notified
-
-Run it yourself: **Actions → Check Blacksmith Xcode versions → Run workflow**.
