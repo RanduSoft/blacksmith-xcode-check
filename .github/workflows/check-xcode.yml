@@ -1,0 +1,88 @@
+name: Check Blacksmith Xcode versions
+
+on:
+  schedule:
+    - cron: "0 6 * * *" # daily at 06:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: check-xcode
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: blacksmith-6vcpu-macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Collect installed Xcode versions
+        run: |
+          chmod +x scripts/collect-xcode.sh
+          scripts/collect-xcode.sh > xcode-list.md
+          echo "Collected:"
+          cat xcode-list.md
+
+      - name: Inject result and detect new versions
+        id: inject
+        run: |
+          python3 - <<'PY'
+          import re, os, pathlib
+
+          def versions(text):
+              # pull the version number from each markdown table row: "| 26.5 | ..."
+              return {m.group(1) for m in re.finditer(r"^\|\s*([0-9][0-9.]*)\s*\|", text, re.M)}
+
+          readme = pathlib.Path("README.md")
+          body = readme.read_text()
+          block = pathlib.Path("xcode-list.md").read_text().strip()
+
+          marker = re.compile(r"(<!-- XCODE-LIST:START -->)(.*?)(<!-- XCODE-LIST:END -->)", re.DOTALL)
+          old = versions(marker.search(body).group(2))
+          new = versions(block)
+          added = sorted(new - old, key=lambda v: [int(x) for x in v.split(".")])
+
+          updated = marker.sub(lambda m: f"{m.group(1)}\n{block}\n{m.group(3)}", body)
+          readme.write_text(updated)
+
+          out = os.environ["GITHUB_OUTPUT"]
+          with open(out, "a") as f:
+              f.write(f"added={' '.join(added)}\n")
+          print("New versions:", added or "none")
+          PY
+          rm -f xcode-list.md
+
+      - name: Commit if changed
+        id: commit
+        run: |
+          if git diff --quiet -- README.md; then
+            echo "No changes to Xcode list."
+            echo "pushed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add README.md
+          git commit -m "chore: update Blacksmith Xcode list"
+          git push
+          echo "pushed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Create release for new Xcode version
+        if: steps.inject.outputs.added != '' && steps.commit.outputs.pushed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          DATE="$(date -u '+%Y-%m-%d')"
+          TAG="$DATE"
+          # avoid tag collisions if more than one new version lands on the same day
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            TAG="$DATE-${{ github.run_number }}"
+          fi
+          NOTES="New Xcode version(s) detected on \`blacksmith-6vcpu-macos-latest\`:
+
+          ${{ steps.inject.outputs.added }}
+
+          See the [README](../../blob/master/README.md#installed-xcode-versions) for the full current list."
+          gh release create "$TAG" --title "$DATE" --notes "$NOTES"
