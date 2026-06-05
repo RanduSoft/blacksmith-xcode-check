@@ -16,7 +16,7 @@ jobs:
   check:
     runs-on: blacksmith-6vcpu-macos-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Collect installed Xcode versions
         run: |
