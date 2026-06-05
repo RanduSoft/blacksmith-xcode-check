@@ -5,7 +5,17 @@ Tracks which **Xcode versions are actually installed on [Blacksmith](https://bla
 ## Installed Xcode versions
 
 <!-- XCODE-LIST:START -->
-_Not yet populated — the daily workflow will fill this in on its first run._
+_Last checked: **2026-06-05 07:42 UTC** — runner macOS 26.3 (25D125)_
+
+| Xcode | Build | Path | Default |
+| --- | --- | --- | :---: |
+| 26.4 | `17E192` | `/Applications/Xcode_26.4.app` |  |
+| 26.3 | `17C529` | `/Applications/Xcode_26.3.app` |  |
+| 26.2 | `17C52` | `/Applications/Xcode_26.2.app` | ✅ |
+| 26.1.1 | `17B100` | `/Applications/Xcode_26.1.1.app` |  |
+| 26.0.1 | `17A400` | `/Applications/Xcode_26.0.1.app` |  |
+
+> ✅ marks the default toolchain selected by `xcode-select` (what a plain `xcodebuild` uses).
 <!-- XCODE-LIST:END -->
 
 ## Why this exists
