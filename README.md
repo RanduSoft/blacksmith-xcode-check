@@ -5,13 +5,14 @@ Tracks which **Xcode versions are actually installed on [Blacksmith](https://bla
 ## Installed Xcode versions
 
 <!-- XCODE-LIST:START -->
-_Last checked: **2026-06-20 08:43 UTC** — runner macOS 26.3 (25D125)_
+_Last checked: **2026-06-21 09:38 UTC** — runner macOS 26.3 (25D125)_
 
 | Xcode | Build | Path | Default |
 | --- | --- | --- | :---: |
-| 26.4 | `17E192` | `/Applications/Xcode_26.4.app` |  |
+| 26.5 | `17F42` | `/Applications/Xcode_26.5.app` | ✅ |
+| 26.4.1 | `17E202` | `/Applications/Xcode_26.4.1.app` |  |
 | 26.3 | `17C529` | `/Applications/Xcode_26.3.app` |  |
-| 26.2 | `17C52` | `/Applications/Xcode_26.2.app` | ✅ |
+| 26.2 | `17C52` | `/Applications/Xcode_26.2.app` |  |
 | 26.1.1 | `17B100` | `/Applications/Xcode_26.1.1.app` |  |
 | 26.0.1 | `17A400` | `/Applications/Xcode_26.0.1.app` |  |
 
