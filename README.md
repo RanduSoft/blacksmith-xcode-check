@@ -5,7 +5,7 @@ Tracks which **Xcode versions are actually installed on [Blacksmith](https://bla
 ## Installed Xcode versions
 
 <!-- XCODE-LIST:START -->
-_Last checked: **2026-09-13 10:51 UTC** — runner macOS 26.3 (25D125)_
+_Last checked: **2026-09-14 11:19 UTC** — runner macOS 26.3 (25D125)_
 
 | Xcode | Build | Path | Default |
 | --- | --- | --- | :---: |
